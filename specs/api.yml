@@ -1,9 +1,11 @@
 openapi: 3.0.0
 info:
-  title: Shopping Cart API
+  title: TempleMSA Airlines API
   description: |
-    Reservation management section of TempleMSA Airlines API.
-    Made by the best group in the class.
+    Reservation management portion of TempleMSA Airlines API.
+    Made by the best group (Group 3) in the class. This subsection
+    within the API allows users to cancel a reservation and obtain
+    info on specific users within a reservation.
   version: 0.0.1
 servers:
   - url: http://api.example.com/v1
@@ -22,62 +24,75 @@ paths:
           schema:
             type : string
           example: 577B4ADB-FCB6-43A5-845B-918A952CB9B4
-      
-      requestBody:
-        required: true
-        content:
-          application/json:
-            example: [
-              {
-                product_id: 14DAFFD0-7E0F-4B28-B7EF-19C6EF45704A,
-                quantity: 4,
-                customizations: {
-                    color: 'blue',
-                    sizeObj: {
-                      type: 'W',
-                      value: 10
-                    }
-                  }
-              },
-              {
-                product_id: 181BBDA8-030E-407A-8DC4-7F16A05F55FF,
-                quantity: 6,
-                customizations: {
-                    size: 4
-                  }
-              }
-            ]
-            schema:
-              type: array
-              items:
-                type: object
-                properties:
-                  product_id:
-                    type: string
-                    example: 14DAFFD0-7E0F-4B28-B7EF-19C6EF45704A
-                  quantity:
-                    type: integer
-                    minimum: 1
-                    maximum: 12
-                    example: 2
-                  customizations:
-                    type: object
-                    example: {
-                      color: 'blue',
-                      sizeObj: {
-                        type: 'W',
-                        value: 10
-                      }
-                    }
       responses:
         '200':    # status code
-          description: A JSON array of user names
+          description: Returns success status and the ID of the deleted reservation
           content:
             application/json:
               schema: 
-                type: array
-                items: 
-                  type: string
+                type: object
+                properties:
+                  reservation_id:
+                    type: string
+                    example: 577B4ADB-FCB6-43A5-845B-918A952CB9B4
+        '400':
+          description: |
+            Returns detailed error explanation in case client submitted invalid
+            data to the event store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400s'
+        '401':
+          description: |
+            Returns detailed error explanation in case where user authentication
+            is needed to fulfill request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400s'
+        '403':
+          description: |
+            Returns a detailed explanation in case where request is forbidden
+            and will not be fulfilled regardless of repeat requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400s'
+        '404':
+          description: |
+            Returns detailed error explanation in case the reservation ID is not
+            found on server 
+# either already deleted or does not exist to begin with
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400s'
+        '409':
+          description: |
+            Returns deatiled error explanation in case request conflicts with
+            current state of resource
+# Cases where reservation is too late to refund? or would it be 403?
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400s'
+        '500': 
+          description: |
+            Returns detailed error explanation in case where server was unable
+            to fulfill the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error500s'
+        '503':
+          description: |
+            Returns detailed error explanation in case where service is temporarily
+            unvailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error500s'
 
   /reservations/{reservation_id}/people/{person_id}:
     get:
@@ -92,7 +107,7 @@ paths:
           description: Identifier for reservation
           schema:
             type: string
-          example: EFED6D5E-9454-4844-B593-F843E98B339C
+          example: 577B4ADB-FCB6-43A5-845B-918A952CB9B4
         - name: person_id
           in: path
           required: true
@@ -100,5 +115,66 @@ paths:
           schema:
             type: string
           example: B8C10FF8-C9A8-40DF-B10E-572DACFC1522
-      
-      
+      responses:
+        '200':    # status code
+          description: success returns a person JSON object with information on associated to {person_id}
+          content:
+            application/json:
+              schema: 
+                type: object
+                items: 
+                  type: object
+                  properties:
+                    reservation_id:
+                      type: string
+                    person_id:
+                      type: string
+                    data:
+                      type: object
+                example:
+                  - reservation_id: 14DAFFD0-7E0F-4B28-B7EF-19C6EF45704A
+                    person_id: 3A99E447-E820-4F17-9E50-D0C1563B5007
+                    data: {
+                      "first_name": John,
+                      "last_name": Doe,
+                      "DOB": 1/1/2000
+                    }
+        '400':
+          description: |
+            Returns detailed error explanation in case client submitted invalid
+            data to the event store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400s'
+
+components:
+  schemas:
+    Error400s:
+      type: object
+      properties:
+        error_id:
+          type: integer
+        description:
+          type: string
+        details:
+          type: string
+      example:
+        error_id: 2345
+        description: |
+          "Error occurred due to type of 400 error."
+        details: "Specifics: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_Client_errors"
+    Error500s:
+      type: object
+      properties:
+        error_id:
+          type: integer
+        description:
+          type: string
+        details:
+          type: string
+      example:
+        error_id: 1234
+        description: |
+          "Error occurred due to type of 500 error."
+        details: "Specifics: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#5xx_Server_errors"

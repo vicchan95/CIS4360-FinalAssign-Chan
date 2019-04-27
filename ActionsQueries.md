@@ -23,9 +23,10 @@
      - Person_id
    - Responses:
      - Reservation_id
-     - First_name
-     - Last_name
-     - Date_of_birth
      - Person_id
+     - Person JSON object:
+       - First_name
+       - Last_name
+       - Date_of_birth
    - Expected Result:
      - Returns info on specific person on reservation
