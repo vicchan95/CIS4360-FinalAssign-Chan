@@ -24,9 +24,13 @@
    - Responses:
      - Reservation_id
      - Person_id
-     - Person JSON object:
+     - Person JSON object (data):
        - First_name
        - Last_name
        - Date_of_birth
+       - Baggage quantity
+       - Has_allergy (true/false)
+       - Has_handicap (true/false)
+       - Has_support_animal (true/false)
    - Expected Result:
      - Returns info on specific person on reservation

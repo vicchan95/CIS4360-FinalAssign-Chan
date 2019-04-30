@@ -5,7 +5,7 @@ info:
     Reservation management portion of TempleMSA Airlines API.
     Made by the best group (Group 3) in the class. This subsection
     within the API allows users to cancel a reservation and obtain
-    info on specific users within a reservation.
+    info on specific passengers within a reservation.
   version: 0.0.1
 servers:
   - url: http://api.example.com/v1
@@ -96,9 +96,9 @@ paths:
 
   /reservations/{reservation_id}/people/{person_id}:
     get:
-      summary: View info for specific person on reservation
+      summary: View info for specific passenger on reservation
       description: |
-        Returns information on person based on person_id
+        Returns information on passenger based on person_id
         within reservation based on reservation_id.
       parameters:
         - name: reservation_id
@@ -117,7 +117,7 @@ paths:
           example: B8C10FF8-C9A8-40DF-B10E-572DACFC1522
       responses:
         '200':    # status code
-          description: success returns a person JSON object with information on associated to {person_id}
+          description: success returns a user JSON object with information on associated to {person_id}
           content:
             application/json:
               schema: 
@@ -137,7 +137,11 @@ paths:
                     data: {
                       "first_name": John,
                       "last_name": Doe,
-                      "DOB": 1/1/2000
+                      "DOB": 1/1/2000,
+                      "baggage_num": 1,
+                      "has_allergy": true,
+                      "is_handicap": false,
+                      "has_support_animal": false
                     }
         '400':
           description: |
