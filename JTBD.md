@@ -1,4 +1,5 @@
 # WHEN -- THEY WANT TO -- SO THAT
+
 1. WHEN a user has special needs,
    THEY WANT TO indicate their needs,
    SO THAT the airline can provide those special accommodations.
