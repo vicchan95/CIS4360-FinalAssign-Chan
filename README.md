@@ -9,6 +9,11 @@ To render specs/api.yml into docs/index.html within Docker container created thr
 make docs
 ```
 
+To render specs/api.yml as an interactive demo with live changes, use:
+```
+make docs-serve
+```
+
 ## Helpful Links
 
 ### API Specs
